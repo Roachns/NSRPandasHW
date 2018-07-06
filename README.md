@@ -1,91 +1,73 @@
-import pandas as pd
-import numpy as np
+# Unit 4 Assingment -  Pandas
 
-purchase_data1 = "purchase_data.json"
-purchase_data2 = "purchase_data2.json"
+## Background
+The data dive continues!
 
-data1 = pd.read_json(purchase_data1)
-data1.head()
+Now, it's time to take what you've learned about Python Pandas and apply it to new situations. For this assignment, you'll need to complete 1 of 2 Data Challenges. Once again, it's your choice which you choose. Just be sure to give it your all -- as the skills you hone will become powerful tools in your data analytics tool belt.
 
-data2= pd.read_json(purchase_data2)
-data2.head()
+## Option 1: Heroes of Pymoli
+Congratulations! After a lot of hard work in the data munging mines, you've landed a job as Lead Analyst for an independent gaming company. You've been assigned the task of analyzing the data for their most recent fantasy game Heroes of Pymoli.
 
-merged_data = pd.merge(data1, data2, how="outer")
-merged_data.dtypes
+Like many others in its genre, the game is free-to-play, but players are encouraged to purchase optional items that enhance their playing experience. As a first task, the company would like you to generate a report that breaks down the game's purchasing data into meaningful insights.
 
-merged_data['Price'] = merged_data.Price.astype(int)
-merged_data.dtypes
+Your final report should include each of the following:
 
-player_count = set(merged_data['SN'])
-player_count = len(player_count)
-frame_df = pd.DataFrame({"Player Count":[player_count]})
-frame_df
+#### Player Count
+- Total Number of Players
 
-items = set(merged_data['Item ID'])
-items = len(items)
+#### Purchasing Analysis (Total)
+- Number of Unique Items
+- Average Purchase Price
+- Total Number of Purchases
+- Total Revenue
 
-avg_price = round(merged_data["Price"].mean(),2)
-tot_purchases =  len(merged_data["Price"])
-tot_revenue = round(merged_data["Price"].sum(),2)
+#### Gender Demographics
+- Percentage and Count of Male Players
+- Percentage and Count of Female Players
+- Percentage and Count of Other / Non-Disclosed
 
-frame2_df= pd.DataFrame({"Number of Unique Items":[items], "Average Price": '$' + str(avg_price), "Number of Purchases": [tot_purchases], "Total Revenue": '$' + str(tot_revenue)})
-frame2_df
+#### Purchasing Analysis (Gender)
+- The below each broken by gender
+     - Purchase Count
+     - Average Purchase Price
+     - Total Purchase Value
+     - Normalized Totals
 
-total_gender = merged_data["Gender"].count()
-male = merged_data["Gender"].value_counts()['Male']
-female = merged_data["Gender"].value_counts()['Female']
-non_gender_specific = total_gender - male - female
+#### Age Demographics
+- The below each broken into bins of 4 years (i.e. <10, 10-14, 15-19, etc.)
+     - Purchase Count
+     - Average Purchase Price
+     - Total Purchase Value
+     - Normalized Totals
 
-male_percent = (male/total_gender) * 100
-female_percent = (female/total_gender) * 100
-non_gender_specific_percent = (non_gender_specific/total_gender) * 100
+#### Top Spenders
+- Identify the the top 5 spenders in the game by total purchase value, then list (in a table):
+     - SN
+     - Purchase Count
+     - Average Purchase Price
+     - Total Purchase Value
 
+#### Most Popular Items
+- Identify the 5 most popular items by purchase count, then list (in a table):
+     - Item ID
+     - Item Name
+     - Purchase Count
+     - Item Price
+     - Total Purchase Value
 
-male_percent = str(round(male_percent, 2)) + '%'
-female_percent = str(round(female_percent, 2)) + '%'
-non_gender_specific_percent = str(round(non_gender_specific_percent, 2)) + '%'
+#### Most Profitable Items
+- Identify the 5 most profitable items by total purchase value, then list (in a table):
+     - Item ID
+     - Item Name
+     - Purchase Count
+     - Item Price
+     - Total Purchase Value
 
-frame3_df = pd.DataFrame({
-    "Gender":["Male", "Female", "Other / Non-Disclosed"], 
-    "Total Count": [male, female, non_gender_specific], 
-    "Percent of Players": [male_percent, female_percent, non_gender_specific_percent]
-    })
-frame3_df
-gender_numbers = frame3_df.set_index('Gender')
-gender_numbers
+As final considerations:
 
-df = merged_data.groupby('Gender').Price.agg(['count', 'mean', 'sum'])
-df.columns = ['Total Purchases','Average Price', "Total Purchases"]
-df['Average Price'] = '$' + (round(df['Average Price'], 2).astype(str))
-df
-
-
-hp_bins = [ 0, 9, 14, 19, 24, 29, 34, 39, 44, 49]
-hp_labels = ["0-9", "10-14", "15-19", "20-24", "25-29", "30-34", "35-39", "40-44", "45-50"]
-
-bin_df = pd.cut(merged_data["Age"], hp_bins, labels=hp_labels)
-
-merged_data["Age Group"] = pd.cut(merged_data["Age"], hp_bins, labels=hp_labels)
-merged_data.head()
-
-df = merged_data.groupby('Age Group').Price.agg(['count', 'mean', 'sum'])
-df.columns = ['Total Purchases','Average Price', "Total Purchases"]
-df['Average Price'] = '$' + (round(df['Average Price'], 2).astype(str))
-df
-
-df = merged_data.groupby('SN').Price.agg(['count', 'mean', 'sum'])
-df.columns = ['Total Purchases','Average Price', "Total Purchase Value"]
-df = df.sort_values('Total Purchase Value', ascending = False)
-df['Average Price'] = '$' + (round(df['Average Price'], 2).astype(str))
-df = df.iloc[:5]
-df
-
-df = merged_data.groupby(['Item ID', 'Item Name']).Price.agg(['count', 'mean', 'sum'])
-df.columns = ['Total Purchases','Average Price', "Total Purchase Value"]
-df = df.sort_values('Total Purchase Value', ascending = False)
-df['Average Price'] = '$' + (round(df['Average Price'], 2).astype(str))
-df = df.iloc[:5]
-df
-
-
-
+- Your script must work for both data-sets given.
+- You must use the Pandas Library and the Jupyter Notebook.
+- You must submit a link to your Jupyter Notebook with the viewable Data Frames.
+- You must include an exported markdown version of your Notebook called README.md in your GitHub repository.
+- You must include a written description of three observable trends based on the data.
+- See Example Solution for a reference on expected format.
